@@ -1,0 +1,80 @@
+---
+title: "Лабораторная работа №4"
+author: "Изотов Илья РИ-450004"
+---
+
+Пользуясь примером из лекции файл (5.0.R) проанализируйте данные о возрасте и физ. характеристиках молюсков
+https://archive.ics.uci.edu/ml/datasets/abalone
+```{r}
+data <- read.csv("kc_house_data.csv", header=TRUE, sep=",")
+summary(data)
+data <- data[,-c(1,2)]
+#summary(data)
+data$waterfront <- factor(data$waterfront, levels = c(0,1))
+#data$condition <- factor(data$condition, levels = c(1:5))
+levels(data$waterfront) <- c("No", "Yes")
+colnames(data)
+#colnames(data) <- c("sex", "length", "diameter", "height", 
+#                "whole_weight", "shucked_weight",
+#                "viscera_weight", "shell_weight", "rings")
+
+colnames(data)
+#par(mfrow=c(1,3)) 
+hist(data$price, main = "Цена")
+hist(data$sqft_living, main = "Жилая площадь")
+hist(data$floors, main = "Количество этажей")
+plot(data$price, data$sqft_living)
+```
+
+Визулизируем возможные зависимости
+```{R}
+plot(data$price, data$sqft_living,'p',main = "Зависимость стоимости от размера жилой площади")
+plot(data$price, data$floors,'p',main = "Зависимость стоимости от количества этажей")
+plot(data$waterfront, data$price,'p',main = "Зависимость стоимости от наличия вида на набережную")
+```
+
+```{r}
+summary(data[data$waterfront=="No", ]$price)
+sum(data$price>4*10^6 & data$waterfront=="No")
+sum(data$price>4*10^6 & data$waterfront=="Yes")
+
+data <- data[!(data$price>2*10^6 & data$waterfront=="No"), ]
+data <- data[!(data$price>4*10^6 & data$waterfront=="Yes"), ]
+plot(data$waterfront, data$price,'p',main = "Зависимость стоимости от наличия вида на набережную")
+data <- data[data$sqft_living<13000,]
+```
+```{r}
+data<- data[data$price<2*10^6,]
+plot(sort(data$price))
+```
+
+
+```{r}
+lm.data <- lm(price~sqft_living+waterfront+condition+floors+view+yr_built+grade+bedrooms+bathrooms+lat+long+sqft_living15, data = data)
+summary(lm.data)
+lm.data1 <- lm(price ~ ., data = data)
+summary(lm.data1)
+plot(lm.data)
+```
+
+```{R}
+plot(data$price, data$sqft_living,'p',main = "Зависимость стоимости от размера жилой площади")
+plot(data$price, data$floors,'p',main = "Зависимость стоимости от количества этажей")
+plot(data$waterfront, data$price,'p',main = "Зависимость стоимости от наличия вида на набережную")
+```
+
+```{r}
+odds <- seq(1, nrow(data), by=2)
+data.in <- data[odds, ]
+data.out <- data[-odds, ]
+```
+
+```{r}
+lm.data.in <- lm(price~sqft_living+waterfront+condition+floors+view+condition+yr_built+grade+bedrooms+bathrooms+lat+long+sqft_living15, data = data.in)
+
+
+
+data.predict.out <- predict(lm.data.in, data.out)
+cor(data.out$price, data.predict.out)
+```
+
