@@ -9,6 +9,7 @@ class pyApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.setupUi(self)
 
 
+
 def main():
     app = QtWidgets.QApplication(sys.argv)
     window = pyApp()
