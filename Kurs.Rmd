@@ -1,53 +1,42 @@
 ---
-title: "Лабораторная работа №4"
-author: "Изотов Илья РИ-450004"
+title: "Курсовая работа"
+author: "Изотов Илья, Куштанов Дмитрий РИ-450004"
 ---
 
-Пользуясь примером из лекции файл (5.0.R) проанализируйте данные о возрасте и физ. характеристиках молюсков
-https://archive.ics.uci.edu/ml/datasets/abalone
 ```{r}
+options(scipen=10000)
 data <- read.csv("kc_house_data.csv", header=TRUE, sep=",")
 summary(data)
 data <- data[,-c(1,2)]
-#summary(data)
 data$waterfront <- factor(data$waterfront, levels = c(0,1))
-#data$condition <- factor(data$condition, levels = c(1:5))
 levels(data$waterfront) <- c("No", "Yes")
-colnames(data)
-#colnames(data) <- c("sex", "length", "diameter", "height", 
-#                "whole_weight", "shucked_weight",
-#                "viscera_weight", "shell_weight", "rings")
-
-colnames(data)
-#par(mfrow=c(1,3)) 
-hist(data$price, main = "Цена")
-hist(data$sqft_living, main = "Жилая площадь")
-hist(data$floors, main = "Количество этажей")
-plot(data$price, data$sqft_living)
+hist(data$price, xlab = "Цена",  main = "Цена")
+hist(data$sqft_living, xlab = "Размер жилой площади", main = "Жилая площадь")
+hist(data$yr_built, xlab = "Год постройки", main = "Год постройки")
+plot(x = data$price, xlab = "Цена", ylab = "Размер жилой площади", y= data$sqft_living, main = "Зависимость цены от размера жилой площади" )
 ```
 
-Визулизируем возможные зависимости
+
+###Визулизируем возможные зависимости
+
 ```{R}
 plot(data$price, data$sqft_living,'p',main = "Зависимость стоимости от размера жилой площади")
-plot(data$price, data$floors,'p',main = "Зависимость стоимости от количества этажей")
+plot(data$price, data$grade,'p',main = "Зависимость стоимости от оценки")
 plot(data$waterfront, data$price,'p',main = "Зависимость стоимости от наличия вида на набережную")
 ```
+
+###Очистка от выбросов
 
 ```{r}
 summary(data[data$waterfront=="No", ]$price)
-sum(data$price>4*10^6 & data$waterfront=="No")
-sum(data$price>4*10^6 & data$waterfront=="Yes")
-
-data <- data[!(data$price>2*10^6 & data$waterfront=="No"), ]
+data <- data[data$sqft_living<13000,]
+data<- data[data$price<2*10^6,]
 data <- data[!(data$price>4*10^6 & data$waterfront=="Yes"), ]
 plot(data$waterfront, data$price,'p',main = "Зависимость стоимости от наличия вида на набережную")
-data <- data[data$sqft_living<13000,]
-```
-```{r}
-data<- data[data$price<2*10^6,]
 plot(sort(data$price))
 ```
 
+###Нахождение значимых параметров
 
 ```{r}
 lm.data <- lm(price~sqft_living+waterfront+condition+floors+view+yr_built+grade+bedrooms+bathrooms+lat+long+sqft_living15, data = data)
@@ -58,23 +47,38 @@ plot(lm.data)
 ```
 
 ```{R}
-plot(data$price, data$sqft_living,'p',main = "Зависимость стоимости от размера жилой площади")
-plot(data$price, data$floors,'p',main = "Зависимость стоимости от количества этажей")
+plot(x= data$price, xlab = "Цена", ylab = "Размер жилой площади", y = data$sqft_living,'p',main = "Зависимость стоимости от размера жилой площади")
+plot(x= data$price,xlab = "Цена", ylab = "Оценка", y =data$grade,'p',main = "Зависимость стоимости от оценки")
 plot(data$waterfront, data$price,'p',main = "Зависимость стоимости от наличия вида на набережную")
 ```
 
+###Добавление дополнительного параметра средней цены по почтовому индексу и разделение данных
+
 ```{r}
+data$avgZipCodePrice <- ave(data$price,data$zipcode)
 odds <- seq(1, nrow(data), by=2)
 data.in <- data[odds, ]
 data.out <- data[-odds, ]
 ```
 
+###Тренировка первой модели
+
 ```{r}
-lm.data.in <- lm(price~sqft_living+waterfront+condition+floors+view+condition+yr_built+grade+bedrooms+bathrooms+lat+long+sqft_living15, data = data.in)
-
-
-
+lm.data.in <- lm(price~sqft_living+waterfront+floors+view+condition+yr_built+grade+bedrooms+bathrooms+lat+long+sqft_living15+avgZipCodePrice, data = data.in)
 data.predict.out <- predict(lm.data.in, data.out)
 cor(data.out$price, data.predict.out)
+summary(lm.data.in)
 ```
 
+
+###Уменьшение числа параметров для тренировки второй модели
+
+```{r}
+
+lm.data.in1 <- lm(price~sqft_living+yr_built+grade+waterfront+avgZipCodePrice, data = data.in)
+data.predict.out1 <- predict(lm.data.in1, data.out)
+cor(data.out$price, data.predict.out1)
+summary(lm.data.in1)
+plot(x = data.out$price, xlab = "Цена", ylab = "Предсказанная цена",y =  data.predict.out1, main = "Зависимость проверяемых цен от предсказанных")
+plot(lm.data.in1)
+```
