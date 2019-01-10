@@ -6,6 +6,7 @@ author: "Изотов Илья, Куштанов Дмитрий РИ-450004"
 ```{r}
 options(scipen=10000)
 data <- read.csv("kc_house_data.csv", header=TRUE, sep=",")
+head(data)
 summary(data)
 data <- data[,-c(1,2)]
 data$waterfront <- factor(data$waterfront, levels = c(0,1))
@@ -13,7 +14,6 @@ levels(data$waterfront) <- c("No", "Yes")
 hist(data$price, xlab = "Цена",  main = "Цена")
 hist(data$sqft_living, xlab = "Размер жилой площади", main = "Жилая площадь")
 hist(data$yr_built, xlab = "Год постройки", main = "Год постройки")
-plot(x = data$price, xlab = "Цена", ylab = "Размер жилой площади", y= data$sqft_living, main = "Зависимость цены от размера жилой площади" )
 ```
 
 
@@ -39,10 +39,8 @@ plot(sort(data$price))
 ###Нахождение значимых параметров
 
 ```{r}
-lm.data <- lm(price~sqft_living+waterfront+condition+floors+view+yr_built+grade+bedrooms+bathrooms+lat+long+sqft_living15, data = data)
+lm.data <- lm(price~., data = data)
 summary(lm.data)
-lm.data1 <- lm(price ~ ., data = data)
-summary(lm.data1)
 plot(lm.data)
 ```
 
@@ -68,6 +66,7 @@ lm.data.in <- lm(price~sqft_living+waterfront+floors+view+condition+yr_built+gra
 data.predict.out <- predict(lm.data.in, data.out)
 cor(data.out$price, data.predict.out)
 summary(lm.data.in)
+plot(x = data.out$price, xlab = "Цена", ylab = "Предсказанная цена",y =  data.predict.out, main = "Зависимость проверяемых цен от предсказанных")
 ```
 
 
