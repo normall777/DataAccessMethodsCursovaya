@@ -9,20 +9,17 @@ import rpy2.robjects as robjects
 
 
 robjects.r("source('R.R')")
-result1 = robjects.r(f"fun.ln()")
-print(type(result1))
-result2 = np.asarray(result1)
-print(type(result2))
-result3 = np.array(map(str, result2))
-print(type(result3))
-result4 = result3.tolist()
-#print(result1)
-#print(result2)
+result = robjects.r(f"fun.ln()")
+result = np.asarray(result)
+result = np.array(map(str, result))
+result = result.tolist()
+
+
 class pyApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.listZip.addItems(result4)
+        self.listZip.addItems(result)
         self.pushButtonPredict.clicked.connect(self.Predict)
         self.listZip.setCurrentRow(0)
 
@@ -40,11 +37,6 @@ class pyApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         print(zipcode, type(zipcode))
         #predictFromR = robjects.r(f"fun.predict({sqftLiving}, {yrBuilt}, {grade}, {waterfront}, {zipcode})")
         predictFromR = robjects.r(f"fun.predict(2570, 1951, 7, 0, 98125)")
-        print(predictFromR, type(predictFromR))
-        predictFromR = np.asarray(predictFromR)
-        print(predictFromR, type(predictFromR))
-        predictFromR =  predictFromR.astype(int)
-        print(predictFromR[0], type(predictFromR[0]))
         predictFromR = int(predictFromR[0])
         self.lcdNumberResult.setProperty("intValue", predictFromR)
 
