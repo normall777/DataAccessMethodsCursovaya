@@ -6,6 +6,8 @@ fun.ln<-function()
   data<- data[data$price<2*10^6,];
   data$avgZipCodePrice <- ave(data$price,data$zipcode);
   lm.data.in <- lm(price~sqft_living+yr_built+grade+waterfront+avgZipCodePrice, data = data);
-  return (c(lm.data.in, data$zipcode));
+  return (unique(data$zipcode));
+  #return (c(lm.data.in, data$zipcode));
+
 }
 
