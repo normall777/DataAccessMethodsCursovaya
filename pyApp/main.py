@@ -9,11 +9,12 @@ import rpy2.robjects as robjects
 
 
 robjects.r("source('R.R')")
-result = robjects.r(f"fun.ln()")
+result = robjects.r(f"fun.zip()")
 result = np.asarray(result)
 result = np.array(map(str, result))
 result = result.tolist()
-
+result = list(result)
+result.sort()
 
 class pyApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
@@ -27,16 +28,17 @@ class pyApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         sqftLiving = self.spinBoxSqftLiving.value()
         yrBuilt = self.spinBoxYrBuilt.value()
         grade = self.spinBoxGrade.value()
-        zipcode = self.listZip.currentItem()
-
+        zipcode = self.listZip.currentRow()
+        zipcode = result[zipcode]
+        print(zipcode)
         if self.radioButtonYes.isChecked():
             waterfront = 1
         elif self.radioButtonNo.isChecked():
             waterfront = 0
 
-        print(zipcode, type(zipcode))
-        #predictFromR = robjects.r(f"fun.predict({sqftLiving}, {yrBuilt}, {grade}, {waterfront}, {zipcode})")
-        predictFromR = robjects.r(f"fun.predict(2570, 1951, 7, 0, 98125)")
+
+        predictFromR = robjects.r(f"fun.predict({sqftLiving}, {yrBuilt}, {grade}, {waterfront}, {zipcode})")
+        #predictFromR = robjects.r(f"fun.predict(2570, 1951, 7, 0, 98125)")
         predictFromR = int(predictFromR[0])
         self.lcdNumberResult.setProperty("intValue", predictFromR)
 

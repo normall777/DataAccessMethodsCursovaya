@@ -78,7 +78,7 @@ class Ui_MainWindow(object):
         self.spinBoxYrBuilt = QtWidgets.QSpinBox(self.gridLayoutWidget_2)
         self.spinBoxYrBuilt.setMinimum(1900)
         self.spinBoxYrBuilt.setMaximum(2015)
-        self.spinBoxYrBuilt.setProperty("value", 2000)
+        self.spinBoxYrBuilt.setProperty("value", 1950)
         self.spinBoxYrBuilt.setObjectName("spinBoxYrBuilt")
         self.gridLayout_4.addWidget(self.spinBoxYrBuilt, 2, 1, 1, 1)
         self.groupBox = QtWidgets.QGroupBox(self.gridLayoutWidget_2)
@@ -165,18 +165,19 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.lcdNumberResult)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1071, 34))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1071, 26))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
 
         self.retranslateUi(MainWindow)
         self.listZip.setCurrentRow(-1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        MainWindow.setTabOrder(self.pushButtonPredict, self.spinBoxSqftLiving)
         MainWindow.setTabOrder(self.spinBoxSqftLiving, self.spinBoxYrBuilt)
         MainWindow.setTabOrder(self.spinBoxYrBuilt, self.spinBoxGrade)
-        MainWindow.setTabOrder(self.spinBoxGrade, self.radioButtonNo)
+        MainWindow.setTabOrder(self.spinBoxGrade, self.listZip)
+        MainWindow.setTabOrder(self.listZip, self.radioButtonNo)
         MainWindow.setTabOrder(self.radioButtonNo, self.radioButtonYes)
-        MainWindow.setTabOrder(self.radioButtonYes, self.pushButtonPredict)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
