@@ -4,6 +4,7 @@ fun.zip<-function()
   data <- data[,-c(1,2)];
   data <- data[data$sqft_living<13000,];
   data<- data[data$price<2*10^6,];
+  data <- data[(data$grade<=12 & data$grade>3),]
   data$avgZipCodePrice <- ave(data$price,data$zipcode);
   return (unique(data$zipcode));
 

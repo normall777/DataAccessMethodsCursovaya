@@ -32,6 +32,7 @@ boxplot(data$price, main = "Цена")
 summary(data[data$waterfront=="No", ]$price)
 data <- data[data$sqft_living<13000,]
 data <- data[(data$price<2*10^6),]
+data <- data[(data$grade<=12 & data$grade>3),]
 plot(data$waterfront, data$price,'p',main = "Зависимость стоимости от наличия вида на набережную")
 plot(sort(data$price), main = "Цена")
 ```
