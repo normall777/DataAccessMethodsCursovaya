@@ -4,7 +4,7 @@ import  design
 import numpy as np
 import rpy2.robjects as robjects
 
-class pyApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
+class pyApp(QtWidgets.QMainWindow, design.Ui_MainWindow, QtWidgets.QDialogButtonBox):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -32,7 +32,14 @@ class pyApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         predictFromR = robjects.r(f"fun.predict({sqftLiving}, {yrBuilt}, {grade}, {waterfront}, {zipcode})")
         predictFromR = int(predictFromR[0])
-        self.lcdNumberResult.setProperty("intValue", predictFromR)
+        if predictFromR < 0:
+            self.lcdNumberResult.setProperty("intValue", 0)
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setText('Ошибка предсказания')
+            msgBox.setWindowTitle('Ошибка')
+            msgBox.exec()
+        else:
+            self.lcdNumberResult.setProperty("intValue", predictFromR)
 
 def main():
     robjects.r("source('R.R')")

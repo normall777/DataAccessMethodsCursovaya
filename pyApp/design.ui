@@ -5,18 +5,16 @@
   <property name="enabled">
    <bool>true</bool>
   </property>
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
+  <property name="minimumSize">
+   <size>
     <width>1071</width>
-    <height>464</height>
-   </rect>
+    <height>456</height>
+   </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>1071</width>
-    <height>464</height>
+    <height>456</height>
    </size>
   </property>
   <property name="font">
