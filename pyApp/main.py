@@ -1,26 +1,21 @@
 import sys
-import os
 from PyQt5 import QtWidgets
 import  design
 import numpy as np
-from rpy2.robjects.packages import importr
-#os.environ['R_USER'] = 'C:/Program Files (x86)/Python37-32/Lib/site-packages/rpy2'
 import rpy2.robjects as robjects
-
-
-robjects.r("source('R.R')")
-result = robjects.r(f"fun.zip()")
-result = np.asarray(result)
-result = np.array(map(str, result))
-result = result.tolist()
-result = list(result)
-result.sort()
 
 class pyApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.listZip.addItems(result)
+        list_r = robjects.r(f"fun.zip()")
+        list_r = np.asarray(list_r)
+        list_r = np.array(map(str, list_r))
+        list_r = list_r.tolist()
+        list_r = list(list_r)
+        list_r.sort()
+        self.list_r = list_r
+        self.listZip.addItems(self.list_r)
         self.pushButtonPredict.clicked.connect(self.Predict)
         self.listZip.setCurrentRow(0)
 
@@ -29,21 +24,18 @@ class pyApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         yrBuilt = self.spinBoxYrBuilt.value()
         grade = self.spinBoxGrade.value()
         zipcode = self.listZip.currentRow()
-        zipcode = result[zipcode]
-        print(zipcode)
+        zipcode = self.list_r[zipcode]
         if self.radioButtonYes.isChecked():
             waterfront = 1
         elif self.radioButtonNo.isChecked():
             waterfront = 0
 
-
         predictFromR = robjects.r(f"fun.predict({sqftLiving}, {yrBuilt}, {grade}, {waterfront}, {zipcode})")
-        #predictFromR = robjects.r(f"fun.predict(2570, 1951, 7, 0, 98125)")
         predictFromR = int(predictFromR[0])
         self.lcdNumberResult.setProperty("intValue", predictFromR)
 
-
 def main():
+    robjects.r("source('R.R')")
     app = QtWidgets.QApplication(sys.argv)
     window = pyApp()
     window.show()
