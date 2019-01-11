@@ -39,6 +39,7 @@ plot(sort(data$price))
 ###Нахождение значимых параметров
 
 ```{r}
+boxplot(data$price)
 lm.data <- lm(price~., data = data)
 summary(lm.data)
 plot(lm.data)
@@ -67,17 +68,18 @@ data.predict.out <- predict(lm.data.in, data.out)
 cor(data.out$price, data.predict.out)
 summary(lm.data.in)
 plot(x = data.out$price, xlab = "Цена", ylab = "Предсказанная цена",y =  data.predict.out, main = "Зависимость проверяемых цен от предсказанных")
+hist(data.out$price - data.predict.out, xlab = "Разница цен", main = "Гистограмма разницы предсказания")
 ```
 
 
 ###Уменьшение числа параметров для тренировки второй модели
 
 ```{r}
-
 lm.data.in1 <- lm(price~sqft_living+yr_built+grade+waterfront+avgZipCodePrice, data = data.in)
 data.predict.out1 <- predict(lm.data.in1, data.out)
 cor(data.out$price, data.predict.out1)
 summary(lm.data.in1)
 plot(x = data.out$price, xlab = "Цена", ylab = "Предсказанная цена",y =  data.predict.out1, main = "Зависимость проверяемых цен от предсказанных")
+hist(data.out$price - data.predict.out1, xlab = "Разница цен", main = "Гистограмма разницы предсказания")
 plot(lm.data.in1)
 ```
