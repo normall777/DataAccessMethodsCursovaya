@@ -23,6 +23,7 @@ hist(data$yr_built, xlab = "Год постройки", main = "Год пост�
 plot(data$price, data$sqft_living,'p',main = "Зависимость стоимости от размера жилой площади")
 plot(data$price, data$grade,'p',main = "Зависимость стоимости от оценки")
 plot(data$waterfront, data$price,'p',main = "Зависимость стоимости от наличия вида на набережную")
+boxplot(data$price, main = "Цена")
 ```
 
 ###Очистка от выбросов
@@ -30,16 +31,15 @@ plot(data$waterfront, data$price,'p',main = "Зависимость стоимо
 ```{r}
 summary(data[data$waterfront=="No", ]$price)
 data <- data[data$sqft_living<13000,]
-data<- data[data$price<2*10^6,]
-data <- data[!(data$price>4*10^6 & data$waterfront=="Yes"), ]
+data <- data[(data$price<2*10^6),]
 plot(data$waterfront, data$price,'p',main = "Зависимость стоимости от наличия вида на набережную")
-plot(sort(data$price))
+plot(sort(data$price), main = "Цена")
 ```
 
 ###Нахождение значимых параметров
 
 ```{r}
-boxplot(data$price)
+boxplot(data$price, main = "Цена")
 lm.data <- lm(price~., data = data)
 summary(lm.data)
 plot(lm.data)
@@ -48,7 +48,6 @@ plot(lm.data)
 ```{R}
 plot(x= data$price, xlab = "Цена", ylab = "Размер жилой площади", y = data$sqft_living,'p',main = "Зависимость стоимости от размера жилой площади")
 plot(x= data$price,xlab = "Цена", ylab = "Оценка", y =data$grade,'p',main = "Зависимость стоимости от оценки")
-plot(data$waterfront, data$price,'p',main = "Зависимость стоимости от наличия вида на набережную")
 ```
 
 ###Добавление дополнительного параметра средней цены по почтовому индексу и разделение данных
