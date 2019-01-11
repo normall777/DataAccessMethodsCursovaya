@@ -1,3 +1,6 @@
+# Функция получения списка потовых индексов
+# Outputs: Возвращает уникальные номера почтовых индексов
+# Для выполнения необходимо нахождение используемового набора данных в текущей директории 
 fun.zip<-function()
 {
   data <- read.csv("kc_house_data.csv", header=TRUE, sep=",");
@@ -10,6 +13,14 @@ fun.zip<-function()
 
 }
 
+# Функция предсказания цены
+# Inputs: sqft_living = площадь жилья
+#         yr_built = год постройки здания
+#         grade = оценка здания
+#         waterfront = Наличие выхода к воде (0 - нет, 1 - да)
+#         zipcode = почтовый индекс
+# Outputs: Возвращает предсказанную цену
+# Для выполнения необходимо нахождение набора данных в текущей директории
 fun.predict<-function(sqft_living, yr_built, grade,  waterfront, zipcode){
   data <- read.csv("kc_house_data.csv", header=TRUE, sep=",");
   data <- data[,-c(1,2)];
@@ -22,5 +33,5 @@ fun.predict<-function(sqft_living, yr_built, grade,  waterfront, zipcode){
   ret <- coef(lm.data.in)[1] + coef(lm.data.in)[2]*sqft_living +
     coef(lm.data.in)[3]*yr_built + coef(lm.data.in)[4]*grade  +
     coef(lm.data.in)[5]*waterfront + coef(lm.data.in)[6]*avg;
-  return (as.numeric(ret))
+  return (as.integer(ret))
 }
